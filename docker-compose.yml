@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: smh-postgres
+    restart: always
+
+    environment:
+      POSTGRES_DB: projectms
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: smh-backend
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./frontend
+    container_name: smh-frontend
+
+    ports:
+      - "5173:5173"
+
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
